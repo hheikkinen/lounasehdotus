@@ -30,6 +30,7 @@ export const translations = i18n
           lunchList: {
             return: "City selection",
             location: "Show location",
+            noResults: "No results :(",
           },
         },
       },
@@ -46,6 +47,7 @@ export const translations = i18n
           lunchList: {
             return: "Kaupungin valinta",
             location: "Näytä sijainti",
+            noResults: "Ei tuloksia :(",
           },
         },
       },

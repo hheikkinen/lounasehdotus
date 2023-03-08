@@ -48,9 +48,9 @@ const MainView = () => {
     setShowList(false);
     setLoading(true);
     api
-      .get(`/lunches?city=${city}&date=${DateTime.now().toFormat("yyyy-LL-dd")}`)
+      .get(`/lunches?city=${city}&date=${date.toFormat("yyyy-LL-dd")}`)
       .then((res: AxiosResponse<Array<Restaurant>>) => {
-        setRestaurants(res.data);
+        setRestaurants(res.data.filter((r) => r.dishes.length));
         setLoading(false);
         setShowList(true);
       })
@@ -77,7 +77,7 @@ const MainView = () => {
     <React.Fragment>
       <Grid container spacing={1}>
         <IconButton
-          style={{ position: "absolute", right: 0, top: 0 }}
+          style={{ position: "absolute", top: 10, right: 10 }}
           title={t("translation:main.language") as string}
           onClick={() => changeLanguage()}
         >
@@ -123,47 +123,54 @@ const MainView = () => {
           <>
             <Grid item xs={12}>
               <Typography variant="h6">
-                {city[0].toUpperCase() + city.slice(1)} {date.toFormat("m.d.yyyy")}
+                {city[0].toUpperCase() + city.slice(1)} {date.toFormat("L.d.yyyy")}
               </Typography>
             </Grid>
-            {restaurants
-              .filter((r) => r.dishes.length)
-              .map((restaurant) => (
-                <Grid item xs={12} key={restaurant.id}>
-                  <Accordion>
-                    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                      <Typography variant="subtitle2">{restaurant.name}</Typography>
-                    </AccordionSummary>
-                    <AccordionDetails>
-                      {restaurant.dishes.map((dish: any) => (
-                        <Typography variant="body1" key={dish.id}>
-                          {dish.name}
-                        </Typography>
-                      ))}
-                    </AccordionDetails>
-                    <AccordionActions>
-                      {restaurant.address && (
-                        <IconButton
-                          onClick={() => mapsLink(restaurant.address)}
-                          title={t("translation:lunchList.location") as string}
-                          style={{ color: "red" }}
-                        >
-                          <Place />
-                        </IconButton>
-                      )}
-                    </AccordionActions>
-                  </Accordion>
-                </Grid>
-              ))}
+            {restaurants.length === 0 && (
+              <Grid item xs={12}>
+                <Typography variant="body1">
+                  {t("translation:lunchList.noResults")}
+                </Typography>
+              </Grid>
+            )}
+            {restaurants.map((restaurant) => (
+              <Grid item xs={12} key={restaurant.id}>
+                <Accordion>
+                  <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                    <Typography variant="subtitle2">{restaurant.name}</Typography>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    {restaurant.dishes.map((dish: any) => (
+                      <Typography variant="body1" key={dish.id}>
+                        {dish.name}
+                      </Typography>
+                    ))}
+                  </AccordionDetails>
+                  <AccordionActions>
+                    {restaurant.address && (
+                      <IconButton
+                        onClick={() => mapsLink(restaurant.address)}
+                        title={t("translation:lunchList.location") as string}
+                        style={{ color: "red" }}
+                      >
+                        <Place />
+                      </IconButton>
+                    )}
+                  </AccordionActions>
+                </Accordion>
+              </Grid>
+            ))}
           </>
         )}
 
         {showList && (
-          <Grid item xs={12} style={{ textAlign: "right" }}>
-            <Button variant="text" onClick={() => clearList()}>
-              <small>{t("translation:lunchList.return")}</small>
-            </Button>
-          </Grid>
+          <Button
+            style={{ position: "absolute", bottom: 10, right: 10 }}
+            variant="text"
+            onClick={() => clearList()}
+          >
+            <small>{t("translation:lunchList.return")}</small>
+          </Button>
         )}
       </Grid>
     </React.Fragment>
