@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Accordion,
   AccordionActions,
@@ -164,13 +164,11 @@ const MainView = () => {
         )}
 
         {showList && (
-          <Button
-            style={{ position: "absolute", bottom: 10, right: 10 }}
-            variant="text"
-            onClick={() => clearList()}
-          >
-            <small>{t("translation:lunchList.return")}</small>
-          </Button>
+          <Grid item xs={12}>
+            <Button variant="text" onClick={() => clearList()}>
+              <small>{t("translation:lunchList.return")}</small>
+            </Button>
+          </Grid>
         )}
       </Grid>
     </React.Fragment>
