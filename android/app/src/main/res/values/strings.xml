@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">lounasehdotus</string>
+    <string name="title_activity_main">lounasehdotus</string>
+    <string name="package_name">com.lounasehdotus.app</string>
+    <string name="custom_url_scheme">com.lounasehdotus.app</string>
+</resources>
