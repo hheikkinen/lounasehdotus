@@ -1,9 +1,5 @@
 import React, { useState } from "react";
 import {
-  Accordion,
-  AccordionActions,
-  AccordionDetails,
-  AccordionSummary,
   Button,
   CircularProgress,
   FormControl,
@@ -12,14 +8,14 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { api, changeLanguage } from "../../config";
 import { DateTime } from "luxon";
 import { AxiosResponse } from "axios";
-import { Place, Search, Translate } from "@mui/icons-material";
+import { Search, Translate } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
+import RestaurantList from "../../components/RestaurantList";
 
-type Restaurant = {
+export type Restaurant = {
   id: number;
   name: string;
   city: string;
@@ -27,7 +23,7 @@ type Restaurant = {
   dishes: Dish[];
 };
 
-type Dish = {
+export type Dish = {
   id: number;
   name: string;
   price: number;
@@ -36,12 +32,12 @@ type Dish = {
 
 const MainView = () => {
   const [city, setCity] = useState("");
-  const [date, setDate] = useState(DateTime.now());
   const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
   const [showList, setShowList] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const { t } = useTranslation();
+  const date = DateTime.now();
 
   const getLunchList = async () => {
     setRestaurants([]);
@@ -64,13 +60,6 @@ const MainView = () => {
     setCity("");
     setRestaurants([]);
     setShowList(false);
-  };
-
-  const mapsLink = (address: string) => {
-    const url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-      address
-    )}`;
-    window.open(url, "_blank");
   };
 
   return (
@@ -119,49 +108,7 @@ const MainView = () => {
           </Grid>
         )}
 
-        {showList && (
-          <>
-            <Grid item xs={12}>
-              <Typography variant="h6">
-                {city[0].toUpperCase() + city.slice(1)} {date.toFormat("L.d.yyyy")}
-              </Typography>
-            </Grid>
-            {restaurants.length === 0 && (
-              <Grid item xs={12}>
-                <Typography variant="body1">
-                  {t("translation:lunchList.noResults")}
-                </Typography>
-              </Grid>
-            )}
-            {restaurants.map((restaurant) => (
-              <Grid item xs={12} key={restaurant.id}>
-                <Accordion>
-                  <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                    <Typography variant="subtitle2">{restaurant.name}</Typography>
-                  </AccordionSummary>
-                  <AccordionDetails>
-                    {restaurant.dishes.map((dish: any) => (
-                      <Typography variant="body1" key={dish.id}>
-                        {dish.name}
-                      </Typography>
-                    ))}
-                  </AccordionDetails>
-                  <AccordionActions>
-                    {restaurant.address && (
-                      <IconButton
-                        onClick={() => mapsLink(restaurant.address)}
-                        title={t("translation:lunchList.location") as string}
-                        style={{ color: "red" }}
-                      >
-                        <Place />
-                      </IconButton>
-                    )}
-                  </AccordionActions>
-                </Accordion>
-              </Grid>
-            ))}
-          </>
-        )}
+        {showList && <RestaurantList city={city} date={date} restaurants={restaurants} />}
 
         {showList && (
           <Grid item xs={12}>
