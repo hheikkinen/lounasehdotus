@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import {
+  Autocomplete,
   Button,
   CircularProgress,
   FormControl,
@@ -8,7 +9,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { api, changeLanguage } from "../../config";
+import { api, changeLanguage, municipalities } from "../../config";
 import { DateTime } from "luxon";
 import { AxiosResponse } from "axios";
 import { Search, Translate } from "@mui/icons-material";
@@ -80,30 +81,50 @@ const MainView = () => {
             <Grid item xs={12}>
               {t("translation:search.description")}
             </Grid>
-            <Grid item xs={12}>
-              <FormControl variant="outlined">
-                <TextField
-                  placeholder={t("translation:search.placeholder") as string}
-                  aria-label="city"
-                  value={city}
-                  onChange={(e) => setCity(e.target.value)}
-                  onKeyPress={(e) => {
-                    if (e.key === "Enter") {
-                      getLunchList();
-                      e.preventDefault();
-                    }
-                  }}
-                  InputProps={{
-                    endAdornment: !loading ? (
-                      <IconButton aria-label="search" onClick={() => getLunchList()}>
-                        <Search />
-                      </IconButton>
-                    ) : (
-                      <CircularProgress size={20} />
-                    ),
-                  }}
-                />
-              </FormControl>
+            <Grid
+              container
+              direction="row"
+              item
+              xs={12}
+              alignItems="center"
+              justifyContent="center"
+            >
+              <Grid item>
+                <FormControl variant="outlined">
+                  <Autocomplete
+                    freeSolo
+                    includeInputInList={false}
+                    options={municipalities}
+                    value={city}
+                    autoHighlight
+                    autoSelect
+                    onChange={(e, value) => setCity(value as string)}
+                    style={{ minWidth: 200, maxWidth: 300 }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        placeholder={t("translation:search.placeholder") as string}
+                        aria-label="city"
+                        onKeyPress={(e) => {
+                          if (e.key === "Enter" && municipalities.includes(city)) {
+                            e.preventDefault();
+                            getLunchList();
+                          }
+                        }}
+                      />
+                    )}
+                  />
+                </FormControl>
+              </Grid>
+              <Grid marginLeft={1}>
+                <IconButton
+                  aria-label="search"
+                  onClick={() => getLunchList()}
+                  disabled={loading || !municipalities.includes(city)}
+                >
+                  {!loading ? <Search /> : <CircularProgress size={20} />}
+                </IconButton>
+              </Grid>
             </Grid>
           </Grid>
         )}

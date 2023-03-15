@@ -12,6 +12,7 @@ import { Place, ExpandMore } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
 import { Restaurant } from "../../views/MainView";
 import { DateTime } from "luxon";
+import { getLanguage } from "../../config";
 
 const RestaurantList = ({
   city,
@@ -35,7 +36,8 @@ const RestaurantList = ({
     <React.Fragment>
       <Grid item xs={12}>
         <Typography variant="h6">
-          {city[0].toUpperCase() + city.slice(1)} {date.toFormat("L.d.yyyy")}
+          {city[0].toUpperCase() + city.slice(1)}{" "}
+          {date.setLocale(getLanguage()).toLocaleString()}
         </Typography>
       </Grid>
       {restaurants.length === 0 && (
